@@ -1,9 +1,9 @@
-import {PropsWithChildren, DetailedHTMLProps, ComponentProps} from "react";
+import { PropsWithChildren } from "react";
 
-export interface IAnyHtmlAttrOptions {
+export interface IAnyAttrOptions {
     [key: string]: any;
 }
 
-export interface AnyHtmlAttrProps extends PropsWithChildren<any> {
-    attributes: IAnyHtmlAttrOptions;
+export interface AnyAttrProps extends PropsWithChildren<any> {
+    attributes: IAnyAttrOptions;
 }

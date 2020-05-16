@@ -2,16 +2,18 @@ import React, {
     ReactElement,
     ReactNode,
 } from 'react';
-import {AnyHtmlAttrProps} from "./module";
+import { AnyAttrProps } from "./module";
+
+
 
 export const asObject = function (anything:any) {
-    return function (node:Element, property:string) {
+    return function _asObjectOrAsStringClosure (node:Element, property:string) {
         // @ts-ignore
         node[property] = anything;
     }
 }
 export const asString = function (anything:any) {
-    return function (node:Element, property:string) {
+    return function _asObjectOrAsStringClosure (node:Element, property:string) {
         let anyValue = anything;
         if (anyValue instanceof Function) {
             node.setAttribute(property, anything);
@@ -34,7 +36,7 @@ export const asString = function (anything:any) {
     }
 }
 
-export const AnyAttribute = function(props:AnyHtmlAttrProps) {
+const AnyAttribute = function (props:AnyAttrProps) {
     const { children, attributes } = props;
     const nodes:Element[] = [];
     const arrChildren:ReactNode[] = [].concat(children);
@@ -44,12 +46,14 @@ export const AnyAttribute = function(props:AnyHtmlAttrProps) {
             nodes.forEach((node: Element) => {
                 for (const property in attributes) {
                     if (attributes.hasOwnProperty(property)) {
-                        if (attributes[property] instanceof Function) {
+                        if ((attributes[property] instanceof Function) &&
+                            (attributes[property].name === '_asObjectOrAsStringClosure')) {
                             attributes[property](node, property);
                             continue;
                         }
                         if (!(attributes[property] instanceof Object)) {
                             node.setAttribute(property, attributes[property]);
+                            continue;
                         }
                         // @ts-ignore
                         node[property] = attributes[property];
@@ -60,7 +64,7 @@ export const AnyAttribute = function(props:AnyHtmlAttrProps) {
     }
 
 
-    const kids = React.Children.map(arrChildren, (element: ReactNode, index) => {
+    const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode, index) => {
         return React.cloneElement(element as ReactElement, { ref });
 
         function ref(node:Element) {
@@ -75,7 +79,8 @@ export const AnyAttribute = function(props:AnyHtmlAttrProps) {
             // refs is async in react, no callback or promise.
             afterRefs(index === arrChildren.length - 1);
         }
-    });
+    }) as ReactNode[];
 
     return (<>{kids}</>);
 }
+export default AnyAttribute;
