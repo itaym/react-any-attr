@@ -41,29 +41,23 @@ describe('AnyAttribute Component ', () => {
                 not type 1 node
             </AnyAttribute>, { attachTo: container });
 
+        function testAsObjectIndex(element:any, index:any, expected:any) {
+            expect(element[index]).toBe(expected);
+        }
         const divElement = document.getElementById('testDiv1');
-        // @ts-ignore
-        expect(divElement.fnAsObject).toBe(testFunction);
-        // @ts-ignore
-        expect(divElement.getAttribute('fnAsString')).toBe('function () { return \'\'; }');
-        // @ts-ignore
-        expect(divElement.objAsObject).toBe(testObject);
-        // @ts-ignore
-        expect(divElement.getAttribute('objAsString')).toBe('{"value":1}');
-        // @ts-ignore
-        expect(divElement.getAttribute('badAsString')).toBe('[object Object]');
-        // @ts-ignore
-        expect(divElement.getAttribute('fnAsIs')).toBe('function () { return \'\'; }');
-        // @ts-ignore
-        expect(divElement.getAttribute('objAsIs')).toBe('[object Object]');
-        // @ts-ignore
-        expect(divElement.getAttribute('asSimpleString')).toBe('hello world');
-        // @ts-ignore
-        expect(divElement.getAttribute('asNumber')).toBe('1');
-        // @ts-ignore
-        expect(divElement.getAttribute('asNumberString')).toBe('1');
-        // @ts-ignore
-        expect(divElement.asNumberObject).toBe(1);
-
+        expect(divElement).toBeDefined();
+        if (divElement) {
+            testAsObjectIndex(divElement, 'fnAsObject', testFunction);
+            expect(divElement.getAttribute('fnAsString')).toBe('function () { return \'\'; }');
+            testAsObjectIndex(divElement, 'objAsObject', testObject);
+            expect(divElement.getAttribute('objAsString')).toBe('{"value":1}');
+            expect(divElement.getAttribute('badAsString')).toBe('[object Object]');
+            expect(divElement.getAttribute('fnAsIs')).toBe('function () { return \'\'; }');
+            expect(divElement.getAttribute('objAsIs')).toBe('[object Object]');
+            expect(divElement.getAttribute('asSimpleString')).toBe('hello world');
+            expect(divElement.getAttribute('asNumber')).toBe('1');
+            expect(divElement.getAttribute('asNumberString')).toBe('1');
+            testAsObjectIndex(divElement, 'asNumberObject', 1);
+        }
     });
 });
