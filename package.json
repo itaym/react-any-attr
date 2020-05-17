@@ -28,7 +28,7 @@
     "Custom"
   ],
   "author": "Itay Merchav",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/itaym/react-any-attr/issues"
   },

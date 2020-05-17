@@ -11,7 +11,6 @@ The purpose of the package is to assist you adding any attribute to any HTML ele
 
 The component receives one property called **attributes**. This property defines the attributes to add to any HTML element it wraps <u>directly</u>.
 The component also provides two helper functions called **asObject** and **asString**.
-When adding a function to an HTML element it will appear as a string: `<input myfunction="function () { return ''; }"`. If you wish to add a function to a HTML elment you must do something like `input['fnName'] = myFunction` which is ugly and will cause problems with Typescript and it is for sure not the React way. Also, if you would like to add an object if will apear as: `<input myobject="[object Object]"` that is where those functions come to hand:
 
 #### asString
 Adds anything to an element converted to string. The attribute will be added to the "outerHTML" of the element and will be visible in the inspect.
@@ -23,7 +22,7 @@ Adds anything to an element without any convertions. The attribute will **not** 
 ------------
 
 
-You an avoid using the **asObject** and **asString** functions at all. Just be aware of the implications.
+You can avoid using the **asObject** and **asString** functions at all. Just be aware of the implications.
 
 ------------
 ### Example
@@ -50,13 +49,8 @@ Note that any attribute set with **asObject** are not visible, and any attribute
 
 ##Have a good productive day :)
 
-<br><br><br><br><br><br><br><br>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick" />
-<input type="hidden" name="hosted_button_id" value="Y55NMQV27RQ7S" />
-<input type="image" src="https://www.paypalobjects.com/en_US/IL/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_IL/i/scr/pixel.gif" width="1" height="1" />
-</form>Or <a href="https://paypal.me/ItayMerchav?locale.x=en_US" target="_blank">Click Here</a>
+<br><br>
+If you like this package please consider donation <a href="https://paypal.me/ItayMerchav?locale.x=en_US" target="_blank">Click Here</a>
 
 ---
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
