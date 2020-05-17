@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1589673421029" clover="3.2.0">
+  <project timestamp="1589673421029" name="All files">
+    <metrics statements="40" coveredstatements="40" conditionals="14" coveredconditionals="14" methods="9" coveredmethods="9" elements="63" coveredelements="63" complexity="0" loc="40" ncloc="40" packages="1" files="1" classes="1"/>
+    <file name="index.tsx" path="C:\Users\itaym\WebStormProjects\react-any-attr\src\index.tsx">
+      <metrics statements="40" coveredstatements="40" conditionals="14" coveredconditionals="14" methods="9" coveredmethods="9"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="10" count="3" type="stmt"/>
+      <line num="12" count="9" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="16" count="4" type="stmt"/>
+      <line num="17" count="12" type="stmt"/>
+      <line num="18" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="19" count="3" type="stmt"/>
+      <line num="20" count="3" type="stmt"/>
+      <line num="22" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="23" count="6" type="stmt"/>
+      <line num="24" count="6" type="stmt"/>
+      <line num="27" count="3" type="stmt"/>
+      <line num="30" count="9" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
+      <line num="36" count="1" type="stmt"/>
+      <line num="37" count="1" type="stmt"/>
+      <line num="39" count="1" type="stmt"/>
+      <line num="40" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="41" count="1" type="stmt"/>
+      <line num="42" count="3" type="stmt"/>
+      <line num="43" count="3" type="stmt"/>
+      <line num="44" count="33" type="cond" truecount="4" falsecount="0"/>
+      <line num="46" count="21" type="stmt"/>
+      <line num="47" count="21" type="stmt"/>
+      <line num="49" count="12" type="stmt"/>
+      <line num="55" count="1" type="stmt"/>
+      <line num="56" count="1" type="stmt"/>
+      <line num="58" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="59" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="62" count="3" type="stmt"/>
+      <line num="65" count="3" type="stmt"/>
+      <line num="67" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="69" count="1" type="stmt"/>
+      <line num="72" count="3" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="78" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

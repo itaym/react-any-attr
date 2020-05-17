@@ -19,18 +19,13 @@ export const asString = function (anything:any) {
             node.setAttribute(property, anything);
             return;
         }
-        if (anyValue instanceof Object){
+        if (anyValue instanceof Object) {
             try {
                 anyValue = JSON.stringify(anything);
             }
-            finally {
-                if (!anyValue) {
-                    anyValue = anything;
-                }
+            catch {
+                anyValue = anything;
             }
-        }
-        if (anything.toString) {
-            anything = anything.toString();
         }
         node.setAttribute(property, anyValue);
     }
@@ -44,40 +39,37 @@ const AnyAttribute = function (props:AnyAttrProps) {
     const afterRefs = function (isLast:boolean) {
         if (isLast) {
             nodes.forEach((node: Element) => {
-                for (const property in attributes) {
-                    if (attributes.hasOwnProperty(property)) {
-                        if ((attributes[property] instanceof Function) &&
-                            (attributes[property].name === '_asObjectOrAsStringClosure')) {
-                            attributes[property](node, property);
-                            continue;
-                        }
-                        if (!(attributes[property] instanceof Object)) {
-                            node.setAttribute(property, attributes[property]);
-                            continue;
-                        }
-                        // @ts-ignore
-                        node[property] = attributes[property];
+                const properties = Object.keys(attributes);
+                for (const property of properties) {
+                    if ((attributes[property] instanceof Function) &&
+                        (attributes[property].name === '_asObjectOrAsStringClosure')) {
+                        attributes[property](node, property);
+                        continue;
                     }
+                    node.setAttribute(property, attributes[property]);
                 }
             });
         }
     }
 
-
+    let maxIndices = arrChildren.length - 1;
     const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode, index) => {
+        // do not clone test nodes, it cause an type is invalid error.
+        if (typeof(element) === "string") {
+            maxIndices--;
+            return element;
+        }
         return React.cloneElement(element as ReactElement, { ref });
 
         function ref(node:Element) {
-            if (node.nodeType === 1) {
-                nodes.push(node);
-            }
+            nodes.push(node);
             // @ts-ignore
-            if (element && element.ref) {
+            if (element.ref instanceof Function) {
                 // @ts-ignore
                 element.ref(node);
             }
             // refs is async in react, no callback or promise.
-            afterRefs(index === arrChildren.length - 1);
+            afterRefs(index === maxIndices);
         }
     }) as ReactNode[];
 
