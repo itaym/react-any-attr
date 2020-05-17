@@ -1,10 +1,5 @@
-import React, {
-    ReactElement,
-    ReactNode,
-} from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { AnyAttrProps } from "./module";
-
-
 
 export const asObject = function (anything:any) {
     return function _asObjectOrAsStringClosure (node:Element, property:string) {
@@ -30,7 +25,6 @@ export const asString = function (anything:any) {
         node.setAttribute(property, anyValue);
     }
 }
-
 const AnyAttribute = function (props:AnyAttrProps) {
     const { children, attributes } = props;
     const nodes:Element[] = [];
@@ -51,14 +45,13 @@ const AnyAttribute = function (props:AnyAttrProps) {
             });
         }
     }
-
-    let maxIndices = arrChildren.length - 1;
-    const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode, index) => {
+    let maxIndices = -1;
+    const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode) => {
         // do not clone test nodes, it cause an type is invalid error.
-        if (typeof(element) === "string") {
-            maxIndices--;
+        if (element && typeof(element) === "string") {
             return element;
         }
+        maxIndices++;
         return React.cloneElement(element as ReactElement, { ref });
 
         function ref(node:Element) {
@@ -69,7 +62,7 @@ const AnyAttribute = function (props:AnyAttrProps) {
                 element.ref(node);
             }
             // refs is async in react, no callback or promise.
-            afterRefs(index === maxIndices);
+            afterRefs(nodes.length - 1 === maxIndices);
         }
     }) as ReactNode[];
 
