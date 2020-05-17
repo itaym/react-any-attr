@@ -47,7 +47,7 @@ const AnyAttribute = function (props:AnyAttrProps) {
     }
     let maxIndices = -1;
     const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode) => {
-        // do not clone test nodes, it cause an type is invalid error.
+        // do not clone text nodes, it cause an type is invalid error.
         if (element && typeof(element) === "string") {
             return element;
         }

@@ -34,7 +34,7 @@ You can avoid using the **asObject** and **asString** functions at all. Just be 
         objectAsString : asString({data: myDataObject}),
         objectAsObject : asObject({data: myDataObject}),
         objectAsIs: myDataObject,
-        anythingElse: 'Hello silence my old friend...'
+        anythingElse: 'Hello darkness my old friend...'
     }}>
     <input id={"input"} />
 </AnyAttribute>
@@ -43,7 +43,7 @@ You can avoid using the **asObject** and **asString** functions at all. Just be 
 
 Note that any attribute set with **asObject** are not visible, and any attribute set with **asString** are visible and the attribute name is in lowercase.
 ```html
-<input id="input" stringtimestamp="158970528706" objectasstring="{"data":{"name":"Your Name", "age": 120, "pet": "cat"}}" objectasis="[object Object]" anythingelse="Hello silence my old friend...">
+<input id="input" stringtimestamp="158970528706" objectasstring="{"data":{"name":"Your Name", "age": 120, "pet": "cat"}}" objectasis="[object Object]" anythingelse="Hello darkness my old friend...">
 ```
 ------------
 
