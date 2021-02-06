@@ -1,6 +1,6 @@
 {
   "name": "react-any-attr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Enables you to create any HTML attribute in React spearing the headache ",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

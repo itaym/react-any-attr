@@ -45,7 +45,7 @@ describe('AnyAttribute Component ', () => {
             expect(element[index]).toBe(expected);
         }
         const divElement = document.getElementById('testDiv1');
-        expect(divElement).toBeDefined();
+        expect(divElement).not.toBeNull();
         if (divElement) {
             testAsObjectIndex(divElement, 'fnAsObject', testFunction);
             expect(divElement.getAttribute('fnAsString')).toBe('function () { return \'\'; }');
