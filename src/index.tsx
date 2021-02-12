@@ -56,12 +56,24 @@ const AnyAttribute = function (props:AnyAttrProps) {
 
         function ref(node:Element) {
             nodes.push(node);
+            // string refs are not supported for it is deprecated
             // @ts-ignore
             if (element.ref instanceof Function) {
+                // this is for ref in the form: <div ref={element => this.element = element} />
                 // @ts-ignore
                 element.ref(node);
             }
-            // refs is async in react, no callback or promise.
+            else {
+                // @ts-ignore
+                if (element.ref && typeof (element.ref) === 'object' && Object.keys(element.ref).includes('current')) {
+                    // this is for ref in the form:
+                    // const elementRef = useRef()
+                    // <div ref={elementRef} />
+                    // @ts-ignore
+                    element.ref.current = node;
+                }
+            }
+            // refs are async in react, no callback or promise.
             afterRefs(nodes.length - 1 === maxIndices);
         }
     }) as ReactNode[];

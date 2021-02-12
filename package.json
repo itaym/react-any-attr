@@ -1,7 +1,7 @@
 {
   "name": "react-any-attr",
-  "version": "1.0.5",
-  "description": "Enables you to create any HTML attribute in React spearing the headache ",
+  "version": "1.1.1",
+  "description": "Enables you to create any HTML attribute in React spearing the headache.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -25,7 +25,9 @@
     "utility",
     "props",
     "Attributes",
-    "Custom"
+    "Properties",
+    "Custom",
+    "Any"
   ],
   "author": "Itay Merchav",
   "license": "MIT",
@@ -39,7 +41,7 @@
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
+    "enzyme-adapter-react-16": "^1.2.0",
     "enzyme-to-json": "^3.4.4",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
