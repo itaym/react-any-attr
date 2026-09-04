@@ -93,11 +93,16 @@ export default function App() {
       <HookDemo />
       <BooleanAndRemovalDemo />
       <style>{`
-        body { font-family: system-ui, sans-serif; margin: 0; }
+        :root { color-scheme: dark; }
+        body { font-family: system-ui, sans-serif; margin: 0; background: #14161a; color: #e4e6eb; }
         main { max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
-        section { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd; }
-        .preview { display: block; background: #111; color: #7fdc7f; padding: .75rem; border-radius: 6px; margin-top: .5rem; white-space: pre-wrap; word-break: break-all; font-size: .85rem; }
-        button { margin: .5rem 0; }
+        h1, h2 { color: #f5f6f8; }
+        code { background: #23262d; padding: .1rem .3rem; border-radius: 4px; }
+        section { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #2c2f36; }
+        .preview { display: block; background: #0a0b0d; color: #7fdc7f; padding: .75rem; border-radius: 6px; margin-top: .5rem; white-space: pre-wrap; word-break: break-all; font-size: .85rem; }
+        button { margin: .5rem 0; background: #2c2f36; color: #e4e6eb; border: 1px solid #3d4149; border-radius: 6px; padding: .4rem .8rem; cursor: pointer; }
+        button:hover { background: #3d4149; }
+        input { background: #23262d; color: #e4e6eb; border: 1px solid #3d4149; border-radius: 4px; padding: .3rem .5rem; }
       `}</style>
     </main>
   );

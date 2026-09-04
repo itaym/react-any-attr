@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "react": "^19.2.8",
+    "react-any-attr": "file:..",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
