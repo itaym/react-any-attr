@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0
+## 3.0.0
 
 ### Fixed
 - `AnyAttribute` no longer crashes when a wrapped child unmounts (ref callbacks

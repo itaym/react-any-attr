@@ -1,6 +1,6 @@
 {
   "name": "react-any-attr",
-  "version": "1.2.0",
+  "version": "3.0.0",
   "description": "Enables you to create any HTML attribute in React spearing the headache.",
   "main": "lib/index.js",
   "module": "lib/esm/index.js",
