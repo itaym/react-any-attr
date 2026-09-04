@@ -1,17 +1,20 @@
-import React, { ReactElement, ReactNode } from 'react';
-import { AnyAttrProps } from "./module";
+import React, { ReactElement, ReactNode, useLayoutEffect, useRef } from 'react';
+import { AnyAttrProps, AttributeSetter, IAnyAttrOptions } from './module';
+import { applyAttributes, markAttributeSetter } from './applyAttributes';
 
-export const asObject = function (anything:any) {
-    return function _asObjectOrAsStringClosure (node:Element, property:string) {
+export { useAnyAttributes } from './useAnyAttributes';
+
+export const asObject = function <T>(anything: T): AttributeSetter {
+    return markAttributeSetter(function _asObjectOrAsStringClosure(node: Element, property: string) {
         // @ts-ignore
         node[property] = anything;
-    }
+    });
 }
-export const asString = function (anything:any) {
-    return function _asObjectOrAsStringClosure (node:Element, property:string) {
-        let anyValue = anything;
+export const asString = function <T>(anything: T): AttributeSetter {
+    return markAttributeSetter(function _asObjectOrAsStringClosure(node: Element, property: string) {
+        let anyValue: any = anything;
         if (anyValue instanceof Function) {
-            node.setAttribute(property, anything);
+            node.setAttribute(property, anything as any);
             return;
         }
         if (anyValue instanceof Object) {
@@ -23,40 +26,73 @@ export const asString = function (anything:any) {
             }
         }
         node.setAttribute(property, anyValue);
-    }
+    });
 }
-const AnyAttribute = function (props:AnyAttrProps) {
-    const { children, attributes } = props;
-    const nodes:Element[] = [];
-    const arrChildren:ReactNode[] = [].concat(children);
-
-    const afterRefs = function (isLast:boolean) {
-        if (isLast) {
-            nodes.forEach((node: Element) => {
-                const properties = Object.keys(attributes);
-                for (const property of properties) {
-                    if ((attributes[property] instanceof Function) &&
-                        (attributes[property].name === '_asObjectOrAsStringClosure')) {
-                        attributes[property](node, property);
-                        continue;
-                    }
-                    node.setAttribute(property, attributes[property]);
-                }
-            });
+// Opt-in helper for HTML-idiomatic boolean attributes: present (empty string) when
+// truthy, absent when falsy. Kept separate from the default `setAttribute` path so
+// plain `true`/`false` values keep their existing (stringified) behavior.
+export const asBoolean = function (anything: any): AttributeSetter {
+    return markAttributeSetter(function _asBooleanClosure(node: Element, property: string) {
+        if (anything) {
+            node.setAttribute(property, '');
         }
+        else {
+            node.removeAttribute(property);
+        }
+    });
+}
+
+function isPlainFunctionComponent(type: any): boolean {
+    if (typeof type !== 'function') {
+        // host tags ("div"), class components, forwardRef/memo objects all support refs.
+        return false;
     }
+    return !(type.prototype && type.prototype.isReactComponent);
+}
+
+const AnyAttribute = function (props: AnyAttrProps) {
+    const { children, attributes = {} as IAnyAttrOptions } = props;
+    const nodesRef = useRef<Element[]>([]);
+    const appliedRef = useRef<IAnyAttrOptions>({});
+    const arrChildren: ReactNode[] = [].concat(children);
+
+    const applyToAllNodes = function () {
+        nodesRef.current.forEach((node: Element) => {
+            applyAttributes(node, attributes, appliedRef.current);
+        });
+        appliedRef.current = attributes;
+    }
+
+    // Re-applies (and diffs away stale) attributes whenever the `attributes` prop
+    // changes on an already-mounted set of nodes, not just once at mount time.
+    useLayoutEffect(() => {
+        applyToAllNodes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [attributes]);
+
     let maxIndices = -1;
-    const kids:ReactNode[] = React.Children.map(arrChildren, (element: ReactNode) => {
-        // do not clone text nodes, it cause an type is invalid error.
-        if (element && typeof(element) === "string") {
+    const nodes: Element[] = [];
+    const kids: ReactNode[] = React.Children.map(arrChildren, (element: ReactNode) => {
+        // do not clone text/null/boolean nodes, it causes a "type is invalid" error.
+        if (!element || typeof element === 'string' || typeof element === 'boolean') {
             return element;
         }
         maxIndices++;
-        return React.cloneElement(element as ReactElement, { ref });
+        if (process.env.NODE_ENV !== 'production' && isPlainFunctionComponent((element as ReactElement).type)) {
+            console.warn(
+                'react-any-attr: AnyAttribute cannot attach a ref to a plain function component child. ' +
+                'Wrap it with React.forwardRef, or call the useAnyAttributes hook inside it instead.'
+            );
+        }
+        return React.cloneElement(element as ReactElement<any>, { ref });
 
-        function ref(node:Element) {
-            nodes.push(node);
+        function ref(node: Element | null) {
             // string refs are not supported for it is deprecated
+            // refs fire with null on detach/unmount; nothing to collect or apply then.
+            if (!node) {
+                return;
+            }
+            nodes.push(node);
             // @ts-ignore
             if (element.ref instanceof Function) {
                 // this is for ref in the form: <div ref={element => this.element = element} />
@@ -65,7 +101,7 @@ const AnyAttribute = function (props:AnyAttrProps) {
             }
             else {
                 // @ts-ignore
-                if (element.ref && typeof (element.ref) === 'object' && Object.keys(element.ref).includes('current')) {
+                if (element.ref && typeof (element.ref) === 'object' && 'current' in element.ref) {
                     // this is for ref in the form:
                     // const elementRef = useRef()
                     // <div ref={elementRef} />
@@ -74,7 +110,10 @@ const AnyAttribute = function (props:AnyAttrProps) {
                 }
             }
             // refs are async in react, no callback or promise.
-            afterRefs(nodes.length - 1 === maxIndices);
+            if (nodes.length - 1 === maxIndices) {
+                nodesRef.current = nodes;
+                applyToAllNodes();
+            }
         }
     }) as ReactNode[];
 

@@ -1,38 +1,24 @@
-import React from 'react';
-import AnyAttribute, { asObject, asString } from '../index';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import React, { useState } from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+import AnyAttribute, { asObject, asString, asBoolean } from '../index';
 
-let container: HTMLDivElement;
-let refObject: string;
-
-Enzyme.configure({ adapter: new Adapter() })
-
-beforeEach((done) => {
-    refObject = {current: undefined} as unknown as string;
-    container = document.createElement('div');
-    document.body.appendChild(container);
-    done();
-});
-afterEach((done) => {
-    document.body.removeChild(container);
-    done();
-})
 type SELF = {
-    testDiv1: HTMLDivElement|undefined|null
+    testDiv1: HTMLDivElement | undefined | null
 }
 
 describe('AnyAttribute Component ', () => {
     test('it sets any property as Obj or Str like expected', () => {
         const
-            self = {testDiv1: undefined} as SELF,
-            getRef = function () { return refObject },
+            self = { testDiv1: undefined } as SELF,
+            refObject = { current: undefined } as unknown as { current: any },
             testFunction = function () { return ''; },
             testObject = { value: 1 },
             testBadObj = { value: window };
-        mount(
+        render(
             <AnyAttribute attributes={{
-                fnAsObject : asObject(testFunction),
+                fnAsObject: asObject(testFunction),
                 fnAsString: asString(testFunction),
                 objAsObject: asObject(testObject),
                 objAsString: asString(testObject),
@@ -44,14 +30,14 @@ describe('AnyAttribute Component ', () => {
                 asNumberString: asString(1),
                 asNumberObject: asObject(1),
             }}>
-                <div id={'testDiv1'} ref={(testDiv1) => self.testDiv1 = testDiv1} />
-                <div id={'testDiv2'} ref={'testDiv2'} />
-                <div id={'testDiv3'} ref={getRef()} />
+                <div id={'testDiv1'} ref={(testDiv1: HTMLDivElement | null) => { self.testDiv1 = testDiv1; }} />
+                <div id={'testDiv2'} ref={'testDiv2' as any} />
+                <div id={'testDiv3'} ref={refObject as any} />
                 <div id={'testDiv4'} />
                 not type 1 node
-            </AnyAttribute>, { attachTo: container });
+            </AnyAttribute>);
 
-        function testAsObjectIndex(element:any, index:any, expected:any) {
+        function testAsObjectIndex(element: any, index: any, expected: any) {
             expect(element[index]).toBe(expected);
         }
         const divElement1 = document.getElementById('testDiv1');
@@ -75,9 +61,84 @@ describe('AnyAttribute Component ', () => {
                 testAsObjectIndex(divElement1, 'asNumberObject', 1);
             }
         });
-        // @ts-ignore
-            expect(divElement1).toBe(self.testDiv1);
-            // @ts-ignore
-            expect(divElement3).toBe(refObject.current);
+        expect(divElement1).toBe(self.testDiv1);
+        expect(divElement3).toBe(refObject.current);
+    });
+
+    test('does not throw when the attributes prop is omitted', () => {
+        expect(() => render(
+            <AnyAttribute>
+                <div id="noAttrsDiv" />
+            </AnyAttribute>
+        )).not.toThrow();
+    });
+
+    test('does not throw when a child unmounts', () => {
+        const { unmount } = render(
+            <AnyAttribute attributes={{ foo: 'bar' }}>
+                <div id="unmountDiv" />
+            </AnyAttribute>
+        );
+        expect(() => unmount()).not.toThrow();
+    });
+
+    test('reactively updates attributes, and removes ones set to undefined/null, on re-render', async () => {
+        const user = userEvent.setup();
+        function Demo() {
+            const [attrs, setAttrs] = useState<Record<string, any>>({ status: 'idle', keep: 'me' });
+            return (
+                <>
+                    <button onClick={() => setAttrs({ status: 'active', removed: undefined, gone: null })}>
+                        update
+                    </button>
+                    <AnyAttribute attributes={attrs}>
+                        <div id="reactiveDiv" />
+                    </AnyAttribute>
+                </>
+            );
+        }
+        render(<Demo />);
+        const div = document.getElementById('reactiveDiv') as HTMLDivElement;
+        expect(div.getAttribute('status')).toBe('idle');
+        expect(div.getAttribute('keep')).toBe('me');
+
+        await user.click(screen.getByText('update'));
+
+        expect(div.getAttribute('status')).toBe('active');
+        expect(div.hasAttribute('keep')).toBe(false);
+        expect(div.hasAttribute('removed')).toBe(false);
+        expect(div.hasAttribute('gone')).toBe(false);
+    });
+
+    test('asBoolean sets/removes a presence attribute without touching plain booleans', () => {
+        render(
+            <AnyAttribute attributes={{
+                trueBoolean: asBoolean(true),
+                falseBoolean: asBoolean(false),
+                plainTrue: true,
+                plainFalse: false,
+            }}>
+                <div id="booleanDiv" />
+            </AnyAttribute>
+        );
+        const div = document.getElementById('booleanDiv') as HTMLDivElement;
+        expect(div.getAttribute('trueBoolean')).toBe('');
+        expect(div.hasAttribute('falseBoolean')).toBe(false);
+        expect(div.getAttribute('plainTrue')).toBe('true');
+        expect(div.getAttribute('plainFalse')).toBe('false');
+    });
+
+    test('warns when wrapping a plain function component without forwardRef', () => {
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+        function PlainFunctionComponent() {
+            return <div id="plainFnDiv" />;
+        }
+        render(
+            <AnyAttribute attributes={{ foo: 'bar' }}>
+                <PlainFunctionComponent />
+            </AnyAttribute>
+        );
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('cannot attach a ref'));
+        warnSpy.mockRestore();
     });
 });

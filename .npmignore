@@ -2,7 +2,10 @@
 node_modules
 coverage
 src
+playground
+.github
 .prettierrc
 jestconfig.json
 tsconfig.json
-tslint.json
+tsconfig.esm.json
+eslint.config.mjs

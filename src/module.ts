@@ -5,5 +5,7 @@ export interface IAnyAttrOptions {
 }
 
 export interface AnyAttrProps extends PropsWithChildren<any> {
-  attributes: IAnyAttrOptions;
+  attributes?: IAnyAttrOptions;
 }
+
+export type AttributeSetter = (node: Element, property: string) => void;

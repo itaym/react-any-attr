@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
+    "module": "node16",
+    "moduleResolution": "node16",
     "declaration": true,
+    "sourceMap": true,
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "lib": ["es2015", "dom"],
+    "types": ["react", "node"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]
